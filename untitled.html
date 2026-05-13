@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Grand — Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #0d0b08;
+            color: #f0ead8;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 60px 24px 40px;
+            border-bottom: 1px solid #2e2a20;
+            background: radial-gradient(ellipse at 50% 0%, #2a2010 0%, transparent 75%);
+        }
+        .ornament {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #c9a84c;
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(40px, 10vw, 64px);
+            font-weight: 300;
+            color: #f5edd6;
+            letter-spacing: 3px;
+        }
+        .subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 18px;
+            color: #9a8a68;
+            margin-top: 8px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid #2e2a20;
+            position: sticky;
+            top: 0;
+            background: #0d0b08;
+            z-index: 1000;
+            overflow-x: auto;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab {
+            background: none;
+            border: none;
+            padding: 16px 20px;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #6b6048;
+            cursor: pointer;
+            transition: color 0.3s;
+            white-space: nowrap;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .tab:hover { color: #a08a50; }
+        .tab.active {
+            color: #c9a84c;
+            border-bottom: 2px solid #c9a84c;
+        }
+
+        /* Sections */
+        .section { display: none; max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+        .section.active { display: block; }
+
+        .section-heading {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            color: #f5edd6;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .section-subheading {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #c9a84c;
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        /* Category divider */
+        .category-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #c9a84c;
+            border-top: 1px solid #2e2a20;
+            padding-top: 28px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Menu items */
+        .menu-item {
+            margin-bottom: 25px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #1e1b14;
+        }
+        .item-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .item-info { flex: 1; }
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+            gap: 12px;
+        }
+        .item-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            color: #f0ead8;
+        }
+        .item-price {
+            font-family: 'Cormorant Garamond', serif;
+            color: #c9a84c;
+            font-size: 19px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .item-desc {
+            font-size: 12px;
+            color: #9a8a68;
+            font-style: italic;
+            line-height: 1.7;
+        }
+        .badge {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            border: 1px solid rgba(201, 168, 76, 0.4);
+            padding: 2px 6px;
+            margin-left: 8px;
+            color: #c9a84c;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            vertical-align: middle;
+        }
+
+        /* Images */
+        .item-image img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #3a3428;
+            transition: transform 0.3s ease;
+            display: block;
+        }
+        .item-image img:hover { transform: scale(1.05); }
+        .item-image img.broken { display: none; }
+
+        /* QR */
+        .qr-section { text-align: center; padding-top: 20px; }
+        .qr-card {
+            background: #f5edd6;
+            padding: 20px;
+            display: inline-block;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 60px 40px;
+            color: #6b6048;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .item-content { flex-direction: column-reverse; align-items: stretch; }
+            .item-image img { width: 100%; height: 180px; margin-bottom: 12px; }
+            .item-header { flex-direction: row; justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="hero">
+    <div class="ornament">Established 1924</div>
+    <h1>THE GRAND</h1>
+    <p class="subtitle">Exquisite Culinary Experience</p>
+</header>
+
+<nav class="tabs">
+    <button class="tab active" onclick="showSection('food', this)">Food</button>
+    <button class="tab" onclick="showSection('drinks', this)">Drinks</button>
+    <button class="tab" onclick="showSection('roomservice', this)">Room Service</button>
+    <button class="tab" onclick="showSection('qr', this)">QR Code</button>
+</nav>
+
+<main class="content">
+
+    <!-- ========== FOOD ========== -->
+    <section id="food" class="section active">
+        <h2 class="section-heading">Dinner Menu</h2>
+        <p class="section-subheading">Ethiopian-Inspired Fine Dining</p>
+
+        <!-- STARTERS -->
+        <div class="category-label">Starters</div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Kategna <span class="badge">Chef's Pick</span></span>
+                        <span class="item-price">$12</span>
+                    </div>
+                    <div class="item-desc">Crisp teff injera brushed with niter kibbeh & house-ground berbere, served warm with smoked ayib cream</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Injera_close.jpg/640px-Injera_close.jpg" alt="Kategna" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Sambusa Royale</span>
+                        <span class="item-price">$14</span>
+                    </div>
+                    <div class="item-desc">Flaky hand-crimped pastry filled with spiced lamb & pine nuts, served with mango-mitmita chutney</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Samboosa.jpg/640px-Samboosa.jpg" alt="Sambusa" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Tegabino Shiro</span>
+                        <span class="item-price">$11</span>
+                    </div>
+                    <div class="item-desc">Silken chickpea purée bubbled tableside in a clay pot, infused with korarima cardamom & golden niter kibbeh</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Shiro_with_injera.jpg/640px-Shiro_with_injera.jpg" alt="Shiro" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Gored Gored</span>
+                        <span class="item-price">$18</span>
+                    </div>
+                    <div class="item-desc">Cubes of dry-aged Boran prime beef, raw or seared to your preference, with mitmita oil & fresh injera crisps</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Gored_Gored.jpg/640px-Gored_Gored.jpg" alt="Gored Gored" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <!-- MAINS -->
+        <div class="category-label">Mains</div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Doro Wot <span class="badge">Signature</span></span>
+                        <span class="item-price">$34</span>
+                    </div>
+                    <div class="item-desc">Free-range hen slow-braised in aged berbere & caramelised onion kulet, crowned with a whole slow-poached egg, served on white teff injera</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Doro_Wat.jpg/640px-Doro_Wat.jpg" alt="Doro Wot" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Kitfo Grand</span>
+                        <span class="item-price">$38</span>
+                    </div>
+                    <div class="item-desc">Hand-minced Wagyu beef warmed in saffron-niter kibbeh & mitmita, accompanied by ayib cheese, sautéed gomen greens & injera tuile</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Kitfo_1.jpg/640px-Kitfo_1.jpg" alt="Kitfo" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Shekla Tibs</span>
+                        <span class="item-price">$42</span>
+                    </div>
+                    <div class="item-desc">Prime lamb medallions sizzled in rosemary-niter kibbeh with caramelised shallots & awaze, served in a hand-thrown clay pot</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Tibs_Close_up.jpg/640px-Tibs_Close_up.jpg" alt="Tibs" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Siga Wot</span>
+                        <span class="item-price">$36</span>
+                    </div>
+                    <div class="item-desc">Slow-braised 72-hour beef short rib in rich berbere reduction, finished with black cardamom & fresh rosemary oil</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Ethiopian_cuisine-_Beyainatu_%28vegan%29.jpg/640px-Ethiopian_cuisine-_Beyainatu_%28vegan%29.jpg" alt="Siga Wot" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Beyainatu</span>
+                        <span class="item-price">$28</span>
+                    </div>
+                    <div class="item-desc">A celebratory platter of misir wot, gomen, aterkik alicha, fosolia & tikil gomen on ceremonial injera — the full tableau of Ethiopian flavour</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Ethiopian_Food_Spread.jpg/640px-Ethiopian_Food_Spread.jpg" alt="Beyainatu" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <!-- DESSERTS -->
+        <div class="category-label">Desserts</div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Tej Panna Cotta</span>
+                        <span class="item-price">$14</span>
+                    </div>
+                    <div class="item-desc">Set honey-wine cream with cardamom-roasted figs, wildflower honey drizzle & toasted sesame brittle</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Panna_cotta.jpg/640px-Panna_cotta.jpg" alt="Tej Panna Cotta" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Dabo Kolo Parfait</span>
+                        <span class="item-price">$12</span>
+                    </div>
+                    <div class="item-desc">Layers of spiced teff crumble, whipped mascarpone & dark Sidama coffee gel, topped with caramelised berbere pecans</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Coffee Ceremony Soufflé <span class="badge">Seasonal</span></span>
+                        <span class="item-price">$16</span>
+                    </div>
+                    <div class="item-desc">Warm dark-roast soufflé with a molten Yirgacheffe espresso centre, served with cardamom ice cream & frankincense smoke</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== DRINKS ========== -->
+    <section id="drinks" class="section">
+        <h2 class="section-heading">Cocktails & Wine</h2>
+        <p class="section-subheading">Crafted & Curated</p>
+
+        <!-- SIGNATURE COCKTAILS -->
+        <div class="category-label">Signature Cocktails</div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Addis Negroni <span class="badge">House Special</span></span>
+                        <span class="item-price">$18</span>
+                    </div>
+                    <div class="item-desc">Tej honey-wine washed gin, Campari, sweet vermouth, dried orange & a whisper of korarima bitters</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Berbere Sour</span>
+                        <span class="item-price">$16</span>
+                    </div>
+                    <div class="item-desc">Mezcal, fresh lime, aquafaba foam, house berbere-honey syrup & smoked salt rim</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Mitmita Mule</span>
+                        <span class="item-price">$15</span>
+                    </div>
+                    <div class="item-desc">Spiced vodka, fresh ginger, lime, ginger beer & a mitmita-sugar rim on chilled copper</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Old Fashioned</span>
+                        <span class="item-price">$16</span>
+                    </div>
+                    <div class="item-desc">Bourbon, angostura bitters, demerara, orange twist — finished with a drop of niter kibbeh butter-washed rye</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WINE -->
+        <div class="category-label">Wine Selection</div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Tej — Ethiopian Honey Wine</span>
+                        <span class="item-price">$14</span>
+                    </div>
+                    <div class="item-desc">House-crafted from wildflower honey & gesho leaves, lightly sparkling, served in a traditional berele vessel</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Tej_berele.jpg/640px-Tej_berele.jpg" alt="Tej Honey Wine" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Rift Valley Cabernet</span>
+                        <span class="item-price">$19 / glass</span>
+                    </div>
+                    <div class="item-desc">Ethiopian Awash Winery, full-bodied with dark cherry & cedar notes, cellar temperature</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Ziway Blanc</span>
+                        <span class="item-price">$17 / glass</span>
+                    </div>
+                    <div class="item-desc">Crisp Ethiopian white, aromas of white peach & cardamom, pairs beautifully with kitfo</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NON-ALCOHOLIC -->
+        <div class="category-label">Non-Alcoholic</div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Ethiopian Coffee Ceremony <span class="badge">Ritual</span></span>
+                        <span class="item-price">$12</span>
+                    </div>
+                    <div class="item-desc">Three rounds of Yirgacheffe pour-over — abol, tona, baraka — served with frankincense smoke & popcorn in the traditional fashion</div>
+                </div>
+                <div class="item-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Ethiopian_coffee_ceremony_2.jpg/640px-Ethiopian_coffee_ceremony_2.jpg" alt="Coffee Ceremony" onerror="this.classList.add('broken')">
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Spriss</span>
+                        <span class="item-price">$9</span>
+                    </div>
+                    <div class="item-desc">Layered fresh-pressed mango, papaya & avocado juices — no sugar, no ice, pure fruit — finished with fresh lime</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Cardamom & Rose Lemonade</span>
+                        <span class="item-price">$8</span>
+                    </div>
+                    <div class="item-desc">Hand-pressed lemon, korarima cardamom syrup, rose water & sparkling mineral water</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-content">
+                <div class="item-info">
+                    <div class="item-header">
+                        <span class="item-name">Bulla Warm Drink</span>
+                        <span class="item-price">$7</span>
+                    </div>
+                    <div class="item-desc">Traditional enset root powder whisked with warm milk, honey & a hint of spiced butter — a restorative Ethiopian classic</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ROOM SERVICE ========== -->
+    <section id="roomservice" class="section">
+        <h2 class="section-heading">Room Service</h2>
+        <p class="section-subheading">Available 24 Hours</p>
+        <p style="text-align:center; color:#6b6048; font-size:13px; font-style:italic;">
+            All dinner menu items available until midnight.<br>A selection of light bites available through the night.<br><br>
+            Dial <span style="color:#c9a84c; font-family:'Cormorant Garamond',serif; font-size:18px;">0</span> from your room to order.
+        </p>
+    </section>
+
+    <!-- ========== QR ========== -->
+    <section id="qr" class="section">
+        <div class="qr-section">
+            <h2 class="section-heading">Share Menu</h2>
+            <div class="qr-card">
+                <div id="qr-code"></div>
+            </div>
+            <p style="margin-top:15px; font-size:12px; color:#9a8a68;">Scan to view on your device</p>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    The Grand Hotel &nbsp;·&nbsp; Fine Dining &nbsp;·&nbsp; Established 1924
+</footer>
+
+<script>
+    function showSection(sectionId, element) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+        });
+        document.getElementById(sectionId).classList.add('active');
+        element.classList.add('active');
+        element.setAttribute('aria-selected', 'true');
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+        const qrEl = document.getElementById("qr-code");
+        if (qrEl) {
+            new QRCode(qrEl, {
+                text: window.location.href,
+                width: 150,
+                height: 150,
+                colorDark: "#000000",
+                colorLight: "#f5edd6",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+    });
+</script>
+</body>
+</html>
